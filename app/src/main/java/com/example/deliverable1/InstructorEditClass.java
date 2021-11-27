@@ -147,6 +147,9 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
 
         db.update("instructorClasses", values, "classType = ? AND instructorName = ? AND classDays = ?", nameArgs);
 
+        // TESTING -- need to make sure this update is working correctly for ALL enrolled members
+        db.update("enrollment", values, "classType = ? AND instructorName = ? AND classDays = ?", nameArgs);
+
         arrayHashes.remove(index);
         list = new HashMap<>();
 
@@ -180,6 +183,10 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
         String tempInstr = arrayHashes.get(index).get("instructorName").toString();
         String tempDay = arrayHashes.get(index).get("classDays").toString();
         db.delete("instructorClasses", "classType = ? AND instructorName = ? AND classDays = ?", new String[] {tempName, tempInstr, tempDay});
+
+        // TESTING -- need to make sure this deletes ALL enrollments for the class!
+        db.delete("enrollment", "classType = ? AND instructorName = ? AND classDays = ?", new String[] {tempName, tempInstr, tempDay});
+
         arrayHashes.remove(index);
         simpleAdapter.notifyDataSetChanged();
         listview.setAdapter(simpleAdapter);
