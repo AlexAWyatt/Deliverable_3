@@ -13,16 +13,22 @@ import java.util.List;
 
 public class ClassDatabase extends SQLiteOpenHelper {
     private static final String TAG = "ClassDatabase.db";
-    public static final String DATABASE_NAME = "ClassDatabase";
-    public static final String KEY_ID = "ID";
-    public static final String INSTRUCTOR_CLASSES = "instructorClasses";
-    public static final String COLUMN_INSTRUCTOR_NAME = "instructorName";
-    public static final String COLUMN_CLASS_TYPE = "classType";
-    public static final String COLUMN_CLASS_DAYS = "classDays";
-    public static final String COLUMN_CLASS_HOURS = "classHours";
-    public static final String COLUMN_CLASS_DIFFICULTY = "classDiff";
-    public static final String COLUMN_CLASS_CAPACITY = "classCap";
-    public static final String COLUMN_CLASS_START_TIME = "startTime";
+    private static final String DATABASE_NAME = "ClassDatabase";
+
+    private static final String KEY_ID = "ID";
+    private static final String INSTRUCTOR_CLASSES = "instructorClasses";
+    private static final String COLUMN_INSTRUCTOR_NAME = "instructorName";
+    private static final String COLUMN_CLASS_TYPE = "classType";
+    private static final String COLUMN_CLASS_DAYS = "classDays";
+    private static final String COLUMN_CLASS_HOURS = "classHours";
+    private static final String COLUMN_CLASS_DIFFICULTY = "classDiff";
+    private static final String COLUMN_CLASS_CAPACITY = "classCap";
+    private static final String COLUMN_CLASS_START_TIME = "startTime";
+
+    public static final String ENROLL_TABLE = "enrollment";
+    public static final String ENROLL_ID = "enrollmentID";
+    public static final String COLUMN_ENROLL_USER = "username";
+
 
     public ClassDatabase(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -34,9 +40,20 @@ public class ClassDatabase extends SQLiteOpenHelper {
         //For debugging
         String createTableStatement = "CREATE TABLE IF NOT EXISTS " + INSTRUCTOR_CLASSES + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_INSTRUCTOR_NAME + " TEXT, " + COLUMN_CLASS_TYPE
-                + " TEXT, " + COLUMN_CLASS_DAYS + " TEXT, " + COLUMN_CLASS_HOURS + " TEXT, " + COLUMN_CLASS_DIFFICULTY + " TEXT, " + COLUMN_CLASS_CAPACITY + " TEXT, " + COLUMN_CLASS_START_TIME + " TEXT)";
+                + " TEXT, " + COLUMN_CLASS_DAYS + " TEXT, " + COLUMN_CLASS_HOURS + " TEXT, " + COLUMN_CLASS_DIFFICULTY + " TEXT, " +
+                COLUMN_CLASS_CAPACITY + " TEXT, " + COLUMN_CLASS_START_TIME + " TEXT)";
 
         db.execSQL(createTableStatement);
+
+        /* this single table will keep track of all classes enrolled in.
+         * - By querying on username one can identify all classes a single user is enrolled in.
+         * - By querying on username, hours and time, one can identify time conflicts.
+         * - By querying on classType and Day, one can identify the number enrolled in a class
+         */
+        db.execSQL("create table if not exists " + ENROLL_TABLE + "(" + ENROLL_ID + " INTEGER primary key autoincrement, "
+                + COLUMN_ENROLL_USER + " TEXT, " + COLUMN_INSTRUCTOR_NAME + " TEXT, " + COLUMN_CLASS_TYPE + " TEXT, " +
+                COLUMN_CLASS_DAYS + " TEXT, " + COLUMN_CLASS_HOURS + " TEXT, " + COLUMN_CLASS_DIFFICULTY + " TEXT, " +
+                COLUMN_CLASS_CAPACITY + " TEXT, " + COLUMN_CLASS_START_TIME + " TEXT)");
 
     }
 
@@ -95,5 +112,9 @@ public class ClassDatabase extends SQLiteOpenHelper {
 
         return null;
     }
+
+    /*public static createMemberTable(String memberTable) {
+        MainActivity
+    }*/
 
 }
