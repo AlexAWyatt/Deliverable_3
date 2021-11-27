@@ -1,3 +1,4 @@
+/*
 package com.example.deliverable1;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,13 +54,15 @@ public class EnrollmentMethodTemp {
         long num = db.insert("enrollment", null, values);
 
         return num;
-        /* Add this below part to the dialogue opening class so when the enrollment button is pressed, user will get a message
+        */
+/* Add this below part to the dialogue opening class so when the enrollment button is pressed, user will get a message
         about whether enrollment is successful when the dialogue closes (or can do it on the view class page -- so within this method - will depend on implementation of member
         activity page)
 
         if (num != -1) {
             Toast.makeText(this, "Inserted Successfully", Toast.LENGTH_SHORT).show();
-        }*/
+        }*//*
+
     }
 
     public int unenroll() throws Exception { // this will need to take place on the "view all enrolled classes" page
@@ -80,7 +83,9 @@ public class EnrollmentMethodTemp {
         arrayHashes.remove(index); // change to relevant command to remove from collection item used to populate listview
         simpleAdapter.notifyDataSetChanged(); // or other relevant command
         listview.setAdapter(simpleAdapter);
-        Toast.makeText(/*current class name*/.this, "Successfully Unenrolled from Class", Toast.LENGTH_SHORT).show();
+        Toast.makeText(*/
+/*current class name*//*
+.this, "Successfully Unenrolled from Class", Toast.LENGTH_SHORT).show();
 
         // TESTING / CHECKING
         if (numRemoved > 1) {
@@ -93,3 +98,4 @@ public class EnrollmentMethodTemp {
         return numRemoved;
     }
 }
+*/

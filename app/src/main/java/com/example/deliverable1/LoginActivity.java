@@ -41,7 +41,8 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameField.getText().toString();
                 String password = passwordField.getText().toString();
                 String role = extras.getString("role"); // "instructor" or "member"
-                long num = -1;
+                long numInstructor = -1;
+                long numMember = -1;
 
                 if(username.equals("")||password.equals("")){
                     Toast.makeText(LoginActivity.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
@@ -53,26 +54,35 @@ public class LoginActivity extends AppCompatActivity {
                         ContentValues values = new ContentValues();
                         values.put("username", username);
                         values.put("password", password);
-                        num = db.insert("instructors", null, values);
+                        numInstructor = db.insert("instructors", null, values);
                     }
                     else if (role.equals("member")) {
                         SQLiteDatabase db = memberDatabase.getWritableDatabase();
                         ContentValues values = new ContentValues();
                         values.put("username", username);
                         values.put("password", password);
-                        num = db.insert("members", null, values);
+                        numMember = db.insert("members", null, values);
                     }
                     else {
                         System.out.println("ERROR, ROLE NOT AS EXPECTED");
                     }
 
-                    if(num != -1){
+                    if(numInstructor != -1){
 
                         Toast.makeText(LoginActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                         intent.putExtra("role", role);
                         intent.putExtra("username", username);
                         startActivity(intent);
+
+                    } else if (numMember != -1) {
+
+                        Toast.makeText(LoginActivity.this, "Registered successfully", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), MemberHomeActivity.class);
+                        intent.putExtra("role", role);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
+
                     } else {
                         Toast.makeText(LoginActivity.this, "User already exists! Please sign in.", Toast.LENGTH_SHORT).show();
                     }
@@ -86,28 +96,39 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameField.getText().toString();
                 String password = passwordField.getText().toString();
                 String role = extras.getString("role");
-                boolean check = false;
+                boolean checkInstructor = false;
+                boolean checkMember = false;
 
                 if(username.equals("")||password.equals("")){
                     Toast.makeText(LoginActivity.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     if (role.equals("instructor")) {
-                        check = instructorDatabase.checkAdmin(username, password);
+                        checkInstructor = instructorDatabase.checkAdmin(username, password);
                     }
                     else if (role.equals("member")) {
-                        check = memberDatabase.checkMember(username, password);
+                        checkMember = memberDatabase.checkMember(username, password);
                     }
                     else {
                         System.out.println("ERROR, ROLE NOT AS EXPECTED ON LOGIN");
                     }
 
-                    if(check){
+                    if(checkInstructor){
+
                         Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                         intent.putExtra("role", role);
                         intent.putExtra("username", username);
                         startActivity(intent);
+
+                        } else if(checkMember) {
+
+                        Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), MemberHomeActivity.class);
+                        intent.putExtra("role", role);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
+
                         } else {
                             Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
                         }
