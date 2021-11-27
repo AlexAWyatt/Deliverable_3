@@ -8,3 +8,5 @@ Solution 1: drop the class that was just edited
 - remove members enrollment record (since capacity, enrollment etc is all tracked through
 Queries of the same database, should only need to make this change to keep
 Consistency).
+
+**Instructors should not be able to lower class capacity below the number of currently enrolled members.
