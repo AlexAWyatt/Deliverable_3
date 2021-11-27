@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedList;
 
 public class InstructorEditClass extends AppCompatActivity implements EditInstructorClassDialog.EditInstructorDialogListener {
     Bundle extras;
@@ -126,7 +127,7 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
         editClass.show(getSupportFragmentManager(), "Instructor Edit Class Dialog");
     }
 
-    public void editData(String day, String hours, String difficulty, String cap, String time , String orgDay){
+    public void editData(String day, String hours, String difficulty, String cap, String time , String orgDay, boolean possibleConflict){
 
         classDatabase = MainActivity.getClassDatabase();
 
@@ -174,6 +175,9 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
 
         simpleAdapter.notifyDataSetChanged();
 
+        if (possibleConflict == true) {
+            checkEnrollmentConflicts(tempClassType, tempInstructorName, day); //  TESTING - to delete any newly conflicted enrollments, CHECK
+        }
     }
 
     public void deleteClass() {
@@ -191,6 +195,92 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
         simpleAdapter.notifyDataSetChanged();
         listview.setAdapter(simpleAdapter);
         Toast.makeText(InstructorEditClass.this, "Removed Class", Toast.LENGTH_SHORT).show();
+    }
+
+    private int checkEnrollmentConflicts(String classType, String instructorName, String classDays) {
+
+        String enrolledUser;
+        String startTime;
+        String classHours;
+
+        LinkedList<String[]> users = new LinkedList<String[]>();
+        String[] userInfo;
+
+        classDatabase = MainActivity.getClassDatabase();
+        SQLiteDatabase db = classDatabase.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from enrollment WHERE classType = ? AND instructorName = ? AND classDays = ?", new String[] {classType, instructorName, classDays});
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+
+                enrolledUser = cursor.getString(1); // should grab the username
+                startTime = cursor.getString(8); // should grab the start time of the class
+                classHours = cursor.getString(5); // should grab the length of the class
+
+                userInfo = new String[] {enrolledUser, startTime, classHours};
+                users.add(userInfo);
+            }
+        }
+
+        return removeConflictedClasses(users, classDays);
+    }
+
+    private int removeConflictedClasses(LinkedList<String[]> users, String classDay) {
+
+        int numConflicted = 0;
+        String start;
+        String length;
+        Integer[] startTimeADuration;
+        int nStart;
+        int nLength;
+
+        Integer[] changedStartTimeADuration;
+        int nChangedStartTime;
+        int nChangedLength;
+        String[] userInfo;
+
+        classDatabase = MainActivity.getClassDatabase();
+        SQLiteDatabase db = classDatabase.getWritableDatabase();
+        Cursor cursor;
+
+
+        while (!users.isEmpty()) {
+            userInfo = users.pop();
+            changedStartTimeADuration = MainActivity.timeConversion(userInfo[1], userInfo[2]);
+            nChangedStartTime = changedStartTimeADuration[0];
+            nChangedLength = changedStartTimeADuration[1];
+
+            cursor = db.rawQuery("select * from enrollment WHERE username = ? AND classDays = ?", new String[] {userInfo[0], classDay});
+
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    start = cursor.getString(8);
+                    length = cursor.getString(5);
+                    startTimeADuration = MainActivity.timeConversion(start, length);
+                    nStart = startTimeADuration[0];
+                    nLength = startTimeADuration[1];
+
+                    numConflicted = numConflicted + checkConflict(nChangedStartTime, nChangedLength, nStart, nLength);
+                }
+            }
+        }
+
+        return numConflicted;
+    }
+
+    /* MAKE SURE TO TEST THIS METHOD - TESTING -- check cases of where times are equal. Start times of classes should be allowed to be the same
+    as end times of other classes, as long as there is no additional overlap. Assumption is made that a member can attend two classes back to back (ASSUMPTION)
+     */
+    private static int checkConflict(int nChangedStartTime, int nChangedLength, int nStart, int nLength){
+
+        if ((nChangedStartTime <= nStart) && ((nChangedStartTime + nChangedLength) > (nStart))) {
+            return 1;
+        }
+        else if ((nStart <= nChangedStartTime) && ((nStart + nLength) > (nChangedStartTime))) {
+            return 1;
+        }
+
+        return 0;
     }
 
 }

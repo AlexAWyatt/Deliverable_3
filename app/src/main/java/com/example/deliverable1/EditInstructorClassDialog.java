@@ -104,8 +104,16 @@ public class EditInstructorClassDialog extends AppCompatDialogFragment {
                         capacity = maxCap.getText().toString();
 
                         boolean isNumeric = true;
+                        boolean possibleConflict = false;
                         String instructorConflict = classDatabase.itemExists(className, dayOfWeek);
                         int num = 0;
+
+                        /* TESTING -- make sure this doesn't cause some edits to be impossible.
+                        This is used to determine whether checkEnrollmentConflicts() is run
+                         */
+                        if ((!dayOfWeek.equals(sDay)) || (!startTime.equals(sTime)) || (!duration.equals(sDuration))) {
+                            possibleConflict = true;
+                        }
 
                         try{
                             num = Integer.parseInt(capacity);
@@ -125,7 +133,7 @@ public class EditInstructorClassDialog extends AppCompatDialogFragment {
                         }
 
                         else if (sDay.equals(dayOfWeek)) {
-                            listener.editData(dayOfWeek, duration, difficulty, capacity, startTime, sDay);
+                            listener.editData(dayOfWeek, duration, difficulty, capacity, startTime, sDay, possibleConflict);
                         }
 
                         else if (instructorConflict != null) {
@@ -135,7 +143,7 @@ public class EditInstructorClassDialog extends AppCompatDialogFragment {
 
                         else{
 
-                            listener.editData(dayOfWeek, duration, difficulty, capacity, startTime, sDay);
+                            listener.editData(dayOfWeek, duration, difficulty, capacity, startTime, sDay, possibleConflict);
 
                         }
 
@@ -278,7 +286,7 @@ public class EditInstructorClassDialog extends AppCompatDialogFragment {
     }
 
     public interface EditInstructorDialogListener{
-        void editData(String day, String hours, String difficulty, String cap, String start, String orgDay);
+        void editData(String day, String hours, String difficulty, String cap, String start, String orgDay, boolean possibleConflict);
         void deleteClass();
     }
 }

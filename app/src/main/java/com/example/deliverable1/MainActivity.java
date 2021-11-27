@@ -68,6 +68,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public static Integer[] timeConversion(String time, String duration) {
+        char[] charHold = time.toCharArray();
+        String timeHold = Character.toString(charHold[0]) + Character.toString(charHold[1]) + Character.toString(charHold[3]) + Character.toString(charHold[4]);
+        int nStart = Integer.parseInt(timeHold);
+
+        String durHold = Character.toString(charHold[0]);
+        int nLength = Integer.parseInt(durHold) * 100;
+
+        charHold = duration.toCharArray();
+        if(charHold[2] != 'h') {
+            nLength = nLength + 30;
+        }
+
+        return new Integer[] {nStart, nLength};
+    }
+
     public static String[] getdecDay() {
         return decDay;
     }
