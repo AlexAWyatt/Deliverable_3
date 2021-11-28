@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MemberHomeActivity extends AppCompatActivity {
+public class MemberHomeActivity extends AppCompatActivity implements ViewMemberClassDialog.ViewMemberDialogListener {
 
     TextView message;
     Bundle extras;
@@ -42,6 +42,8 @@ public class MemberHomeActivity extends AppCompatActivity {
 
     static String className;
     static String dayOfTheWeek;
+
+    private Bundle bundle;
 
     int index;
 
@@ -123,7 +125,7 @@ public class MemberHomeActivity extends AppCompatActivity {
 
                 index = i;
 
-                openViewClassDialog();
+                openViewMemberClassDialog();
             }
         });
 
@@ -195,15 +197,16 @@ public class MemberHomeActivity extends AppCompatActivity {
     }
 
 
-    public void openViewClassDialog(){
+    public void openViewMemberClassDialog(){
         ArrayList<String> items = getItemInfo();
 
         if (items != null){
-            ViewClassDialog viewClass = new ViewClassDialog();
+            ViewMemberClassDialog viewClass = new ViewMemberClassDialog();
 
-            Bundle bundle = new Bundle();
+            bundle = new Bundle();
 
             bundle.putStringArrayList("items", items);
+            bundle.putString("username", username);
 
             viewClass.setArguments(bundle);
 
@@ -228,5 +231,50 @@ public class MemberHomeActivity extends AppCompatActivity {
         }
         cursor.close();
         return items;
+    }
+
+    public long enroll() {
+        classDatabase = MainActivity.getClassDatabase();
+        SQLiteDatabase db = classDatabase.getWritableDatabase();
+        long num = -1;
+
+        ArrayList<String> items = bundle.getStringArrayList("items");
+
+        ContentValues values = new ContentValues();
+        values.put("username", bundle.getString("username"));
+        values.put("classType", items.get(1));
+        values.put("instructorName", items.get(0));
+        values.put("classDays", items.get(2));
+        values.put("classHours", items.get(3));
+        values.put("classDiff", items.get(4));
+        values.put("classCap", items.get(5));
+        values.put("startTime", items.get(6));
+
+        if (checkEnrollment(values)) {
+            num = db.insert("enrollment", null, values);
+        }
+        else {
+            Toast.makeText(this, "Already enrolled, cannot enroll again.", Toast.LENGTH_SHORT).show();
+            return -1;
+        }
+
+        if (num != -1) {
+            Toast.makeText(this, "Inserted Successfully", Toast.LENGTH_SHORT).show();
+        }
+        else { // ERROR - TESTING
+            Toast.makeText(this, "Error: Could not add to enrollment database", Toast.LENGTH_SHORT).show();
+        }
+
+        return num;
+
+    }
+
+    private boolean checkEnrollment(ContentValues values) {
+        classDatabase = MainActivity.getClassDatabase();
+        SQLiteDatabase db = classDatabase.getWritableDatabase();
+        Cursor cursor1 = db.rawQuery("select * from enrollment WHERE username = ? AND classType = ? AND instructorName = ? AND classDays = ?",
+                new String[] {values.get("username").toString(), values.get("classType").toString(), values.get("instructorName").toString(), values.get("classDays").toString()});
+
+        return !(cursor1.moveToFirst());
     }
 }

@@ -149,7 +149,7 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
         db.update("instructorClasses", values, "classType = ? AND instructorName = ? AND classDays = ?", nameArgs);
 
         // TESTING -- need to make sure this update is working correctly for ALL enrolled members
-        db.update("enrollment", values, "classType = ? AND instructorName = ? AND classDays = ?", nameArgs);
+        db.update("enrollment", values, "classType = ? AND instructorName = ? AND classDays = ?", nameArgs); // Make sure this doesnt affect the "username" column
 
         arrayHashes.remove(index);
         list = new HashMap<>();
