@@ -34,12 +34,20 @@ public class EnrollmentMethodTemp {
     ClassDatabase classDatabase;
 
 
-    public long enroll() {
+    public int enroll() {
         classDatabase = MainActivity.getClassDatabase();
         SQLiteDatabase db = classDatabase.getWritableDatabase();
 
         Bundle bundle = getArguments();
         ArrayList<String> items = bundle.getStringArrayList("items");
+
+        if(db.checkConflict(bundle.getString("username"),items.get(6),items.get(2),items.get(3)){
+            return -1;// return -1 when there is another class at the same time as this class
+        }
+
+        if(db.checkFullClass(item.get(1),item.get(2))){
+            return 0;//return 0 when class is full
+        }
 
         ContentValues values = new ContentValues();
         values.put("username", bundle.getString("username"));
@@ -51,17 +59,32 @@ public class EnrollmentMethodTemp {
         values.put("classCap", items.get(5));
         values.put("startTime", items.get(6));
 
-        long num = db.insert("enrollment", null, values);
+        Cursor cursor = db.rawQuery("Select * from enrollment where classHours = ?", new String[] {items.get(5)});
 
-        return num;
+        long num = db.insert("enrollment", null, values);
+        if(num !=-1) return 1;//return 1 if successful
+        else {
+            return -2;// return -2 if any problem with db insertion
+        }
         */
 /* Add this below part to the dialogue opening class so when the enrollment button is pressed, user will get a message
         about whether enrollment is successful when the dialogue closes (or can do it on the view class page -- so within this method - will depend on implementation of member
         activity page)
 
-        if (num != -1) {
+        if (num == 1) {
             Toast.makeText(this, "Inserted Successfully", Toast.LENGTH_SHORT).show();
-        }*//*
+        }
+        else if(num ==-1){
+            Toast.makeText(this, "A time conflict occurred! Operation Failed.", Toast.LENGTH_SHORT).show();
+        }
+        else if(num ==0){
+            Toast.makeText(this, "Class is Full! Operation Failed.", Toast.LENGTH_SHORT).show();
+        }
+        else if(num ==-2){
+            Toast.makeText(this, "An error occurred! Operation Failed.", Toast.LENGTH_SHORT).show();
+        }
+
+        *//*
 
     }
 
