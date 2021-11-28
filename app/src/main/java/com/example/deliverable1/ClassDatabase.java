@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,8 +41,8 @@ public class ClassDatabase extends SQLiteOpenHelper {
         //For debugging
         String createTableStatement = "CREATE TABLE IF NOT EXISTS " + INSTRUCTOR_CLASSES + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_INSTRUCTOR_NAME + " TEXT, " + COLUMN_CLASS_TYPE
-                + " TEXT, " + COLUMN_CLASS_DAYS + " TEXT, " + COLUMN_CLASS_HOURS + " TEXT, " + COLUMN_CLASS_DIFFICULTY + " TEXT, " +
-                COLUMN_CLASS_CAPACITY + " TEXT, " + COLUMN_CLASS_START_TIME + " TEXT)";
+                + " TEXT, " + COLUMN_CLASS_DAYS + " TEXT, " + COLUMN_CLASS_HOURS + " INTEGER, " + COLUMN_CLASS_DIFFICULTY + " TEXT, " +
+                COLUMN_CLASS_CAPACITY + " INTEGER, " + COLUMN_CLASS_START_TIME + " TIMESTAMP)";
 
         db.execSQL(createTableStatement);
 
@@ -52,8 +53,8 @@ public class ClassDatabase extends SQLiteOpenHelper {
          */
         db.execSQL("create table if not exists " + ENROLL_TABLE + "(" + ENROLL_ID + " INTEGER primary key autoincrement, "
                 + COLUMN_ENROLL_USER + " TEXT, " + COLUMN_INSTRUCTOR_NAME + " TEXT, " + COLUMN_CLASS_TYPE + " TEXT, " +
-                COLUMN_CLASS_DAYS + " TEXT, " + COLUMN_CLASS_HOURS + " TEXT, " + COLUMN_CLASS_DIFFICULTY + " TEXT, " +
-                COLUMN_CLASS_CAPACITY + " TEXT, " + COLUMN_CLASS_START_TIME + " TEXT)");
+                COLUMN_CLASS_DAYS + " TEXT, " + COLUMN_CLASS_HOURS + " INTEGER, " + COLUMN_CLASS_DIFFICULTY + " TEXT, " +
+                COLUMN_CLASS_CAPACITY + " INTEGER, " + COLUMN_CLASS_START_TIME + " TIMESTAMP)");
 
     }
 
@@ -111,6 +112,27 @@ public class ClassDatabase extends SQLiteOpenHelper {
         cursor.close();
 
         return null;
+    }
+
+    public boolean checkFullClass(String classType, String day){//function to check if class is full or not
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("Select classCap from instructorClasses where classType = ? and classDays= ?", new String[] {classType,day});
+        if (cursor.moveToFirst()){
+            int c = cursor.getInt(0);
+            if(c==0) return true;//true if class is full
+        }
+        return false;
+    }
+
+    public boolean checkConflict(String userName, String startTime, String day, int hours){// function to check if there is any time conflicts between selected class and other enrolled classes
+        SQLiteDatabase db = this.getWritableDatabase();
+        Timestamp t= Timestamp.valueOf(startTime);//casting start time into timestamp to add hours
+        t.setHours(t.getHours()+hours);//adding class hours to figure out end time of class
+        String end=t.toString();
+        Cursor cursor = db.rawQuery("Select * from enrollment where username= ? and classDays=? and startTime between ? and ? "
+                , new String[] {userName,day,startTime,end});
+        return cursor.getCount()>0;//true of there is class which is enrolled having start time between start and end time of selected class
     }
 
     /*public static createMemberTable(String memberTable) {
