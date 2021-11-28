@@ -25,7 +25,7 @@ public class MemberHomeActivity extends AppCompatActivity {
     Bundle extras;
 
     Button buttonFindInstructorClass;
-    Button buttonFindByInstructorName;
+    Button buttonFindByDayOfTheWeek;
     Button buttonViewClasses;
 
     ListView listview;
@@ -36,12 +36,12 @@ public class MemberHomeActivity extends AppCompatActivity {
     ClassDatabase classDatabase;
 
     EditText classInput;
-    EditText instructorInput;
+    EditText dayOfTheWeekInput;
 
     String username;
 
     static String className;
-    static String instructorName;
+    static String dayOfTheWeek;
 
     int index;
 
@@ -55,11 +55,11 @@ public class MemberHomeActivity extends AppCompatActivity {
         listview = findViewById(R.id.listview_home);
 
         buttonFindInstructorClass = findViewById(R.id.button_findByClassName);
-        buttonFindByInstructorName = findViewById(R.id.button_findByInstructorName);
+        buttonFindByDayOfTheWeek = findViewById(R.id.button_findByDayOfTheWeek);
         buttonViewClasses = findViewById(R.id.button_viewAll);
 
         classInput = findViewById(R.id.editText_instructor_class_name);
-        instructorInput = findViewById(R.id.editText_instructor_name);
+        dayOfTheWeekInput = findViewById(R.id.editText_day_of_the_week);
 
         classDatabase = MainActivity.getClassDatabase();
 
@@ -78,7 +78,7 @@ public class MemberHomeActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 className = classInput.getText().toString();
-                instructorName = "";
+                dayOfTheWeek = "";
 
                 if (checkInfo()) {
                     buildList(className, "classType");
@@ -91,15 +91,15 @@ public class MemberHomeActivity extends AppCompatActivity {
             }
         });
 
-        buttonFindByInstructorName.setOnClickListener(new View.OnClickListener() {
+        buttonFindByDayOfTheWeek.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 className = "";
-                instructorName = instructorInput.getText().toString();
+                dayOfTheWeek = dayOfTheWeekInput.getText().toString();
 
                 if (checkInfo()) {
-                    buildList(instructorName, "instructorName");
+                    buildList(dayOfTheWeek, "classDays");
                 }
                 if (arrayHashes.isEmpty()) {
                     noClasses();
@@ -186,7 +186,7 @@ public class MemberHomeActivity extends AppCompatActivity {
 
     public boolean checkInfo() {
 
-        if (className.equals("") && instructorName.equals("")){
+        if (className.equals("") && dayOfTheWeek.equals("")){
             Toast.makeText(this, "Please enter in the proper field!", Toast.LENGTH_SHORT).show();
             return false;
         }

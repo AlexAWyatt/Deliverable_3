@@ -79,18 +79,18 @@
                     android:id="@+id/textView_instructor_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Instructor Name:"
+                    android:text="Day of the Week:"
                     android:textColor="@color/white"
                     android:textSize="18sp">
 
                 </TextView>
 
                 <EditText
-                    android:id="@+id/editText_instructor_name"
+                    android:id="@+id/editText_day_of_the_week"
                     android:layout_width="240dp"
                     android:layout_height="48dp"
                     android:ems="10"
-                    android:hint="Enter Instructor Name"
+                    android:hint="Enter Day of the Week"
                     android:textColorHint="@color/white"
                     android:textSize="16sp">
 
@@ -126,12 +126,12 @@
                     android:text="Find by Class Name" />
 
                 <Button
-                    android:id="@+id/button_findByInstructorName"
+                    android:id="@+id/button_findByDayOfTheWeek"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/light_orange"
                     android:padding="10dp"
-                    android:text="Find By Instructor" />
+                    android:text="Find By Day of the Week" />
 
             </TableRow>
 
