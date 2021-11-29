@@ -251,7 +251,7 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
         if(this.checkFullClass(items.get(1),items.get(2))){
             num= 0;//return 0 when class is full
         }
-        if( num!=1) {
+        if( num==1) {
             ContentValues values = new ContentValues();
             values.put("username", bundle.getString("username"));
             values.put("classType", items.get(1));
