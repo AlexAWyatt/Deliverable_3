@@ -27,6 +27,7 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
     Button buttonFindInstructorClass;
     Button buttonFindByDayOfTheWeek;
     Button buttonViewClasses;
+    Button buttonViewEnrolledClasses;
 
     ListView listview;
     HashMap<String, String> list;
@@ -59,6 +60,7 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
         buttonFindInstructorClass = findViewById(R.id.button_findByClassName);
         buttonFindByDayOfTheWeek = findViewById(R.id.button_findByDayOfTheWeek);
         buttonViewClasses = findViewById(R.id.button_viewAll);
+        buttonViewEnrolledClasses = findViewById(R.id.button_viewEnrolledClasses);
 
         classInput = findViewById(R.id.editText_instructor_class_name);
         dayOfTheWeekInput = findViewById(R.id.editText_day_of_the_week);
@@ -126,6 +128,17 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
                 index = i;
 
                 openViewMemberClassDialog();
+            }
+        });
+
+        buttonViewEnrolledClasses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MemberEnrolledClassesActivity.class);
+
+                intent.putExtra("username", username);
+
+                startActivity(intent);
             }
         });
 

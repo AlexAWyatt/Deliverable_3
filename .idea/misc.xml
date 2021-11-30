@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/SEG_2105_Labs/Deliverable_3/app/src/main/res/layout/activity_home_member.xml" value="0.3314814814814815" />
+        <entry key="..\:/SEG_2105_Labs/Deliverable_3/app/src/main/res/layout/activity_member_enrolled_classes.xml" value="0.3314814814814815" />
+        <entry key="..\:/SEG_2105_Labs/Deliverable_3/app/src/main/res/layout/instructor_edit.xml" value="0.3314814814814815" />
         <entry key="..\:/Users/Calvin/Documents/Introduction to Software Engineering/Deliverable_3/app/src/main/res/layout/activity_home_member.xml" value="0.2907608695652174" />
         <entry key="..\:/Users/Calvin/Documents/Introduction to Software Engineering/Deliverable_3/app/src/main/res/layout/activity_main.xml" value="0.2907608695652174" />
       </map>

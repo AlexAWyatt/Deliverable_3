@@ -19,6 +19,9 @@
             android:name=".MemberHomeActivity"
             android:exported="true" />
         <activity
+            android:name=".MemberEnrolledClassesActivity"
+            android:exported="true"/>
+        <activity
             android:name=".LoginActivity"
             android:exported="true" />
         <activity

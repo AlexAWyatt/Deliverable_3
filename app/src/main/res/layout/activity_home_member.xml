@@ -154,6 +154,15 @@
             android:background="@color/light_orange"
             android:text="View All Classes" />
 
+        <Button
+            android:id="@+id/button_viewEnrolledClasses"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@color/light_orange"
+            android:text="View Enrolled Classes" />
+
     </LinearLayout>
 
     <LinearLayout
