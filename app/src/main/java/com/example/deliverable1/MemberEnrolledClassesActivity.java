@@ -14,7 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MemberEnrolledClassesActivity extends AppCompatActivity {
+public class MemberEnrolledClassesActivity extends AppCompatActivity implements UnenrollClassDialog.UnenrollClassDialogListener{
+
+    Bundle extras;
+    Bundle bundle;
 
     ListView enrolledClassesList;
 
@@ -27,6 +30,8 @@ public class MemberEnrolledClassesActivity extends AppCompatActivity {
     ClassDatabase classDatabase;
     SQLiteDatabase db;
 
+    int index;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +42,9 @@ public class MemberEnrolledClassesActivity extends AppCompatActivity {
 
         arrayHashes = new ArrayList<HashMap<String, String>>();
 
-        user = this.getIntent().getStringExtra("username");
+        extras = getIntent().getExtras();
+
+        user = extras.getString("username");
 
         adapter = new SimpleAdapter(this, arrayHashes, R.layout.list_item4, new String[]{"classType", "instructorName", "classDays"}, new int[]{R.id.text1111, R.id.text2222, R.id.text3333});
 
@@ -77,10 +84,53 @@ public class MemberEnrolledClassesActivity extends AppCompatActivity {
         enrolledClassesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                index = i;
 
+                openUnenrollDialog();
             }
         });
 
+    }
+
+    public void openUnenrollDialog(){
+
+        ArrayList<String> items = getItemInfo();
+
+        if (items != null){
+            UnenrollClassDialog unenrollClassDialog = new UnenrollClassDialog();
+
+            bundle = new Bundle();
+
+            bundle.putStringArrayList("items", items);
+            bundle.putString("username", user);
+
+            unenrollClassDialog.setArguments(bundle);
+
+            unenrollClassDialog.show(getSupportFragmentManager(), "Unenroll Class Dialog");
+        }
+
 
     }
+
+    public ArrayList<String> getItemInfo() {
+
+        ArrayList<String> items = new ArrayList<>();
+        SQLiteDatabase db = classDatabase.getWritableDatabase();
+
+        String cType = new String(arrayHashes.get(index).get("classType").toString());
+        String iName = new String(arrayHashes.get(index).get("instructorName").toString());
+        String day = new String(arrayHashes.get(index).get("classDays").toString());
+
+        Cursor cursor = db.rawQuery("select * from instructorClasses WHERE instructorName = ? AND classType = ? AND classDays = ?", new String[] {iName, cType, day});
+        cursor.moveToFirst(); // if this fails, we have an issue where our click isn't corresponding correctly to the arrayHashes array
+
+        for (int i = 1; i < 8; i++) {
+            items.add(cursor.getString(i));
+        }
+        cursor.close();
+        return items;
+    }
+
+    //public void unenroll() Unenroll to be implemented here! - Nelson
+
 }
