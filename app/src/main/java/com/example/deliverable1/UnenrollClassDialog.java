@@ -66,9 +66,7 @@ public class UnenrollClassDialog extends AppCompatDialogFragment {
                 })
                 .setNeutralButton("Unenroll", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // Implement unenroll functionality here Alex! - Nelson
-                    }
+                    public void onClick(DialogInterface dialogInterface, int i) { listener.unenroll();                   }
                 });
 
 
@@ -88,7 +86,7 @@ public class UnenrollClassDialog extends AppCompatDialogFragment {
     }
 
     public interface UnenrollClassDialogListener {
-        //void unenroll(); Interface method for unenroll - Nelson
+        int unenroll(); //Interface method for unenroll - Nelson
     }
 
 

@@ -249,7 +249,7 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
     public long enroll() {
         classDatabase = MainActivity.getClassDatabase();
         SQLiteDatabase db = classDatabase.getWritableDatabase();
-        long num=1;
+        long num = -1;
 
 
         ArrayList<String> items = bundle.getStringArrayList("items");
@@ -257,14 +257,17 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
         
         int startTime = changedStartTimeADuration[0];
         int length = changedStartTimeADuration[1];
-        if(this.checkConflict(bundle.getString("username"),startTime,items.get(3),length)){
-            num= -1;// return -1 when there is another class at the same time as this class
-        }
 
-        if(this.checkFullClass(items.get(1),items.get(2))){
-            num= 0;//return 0 when class is full
+        if (this.checkConflict(bundle.getString("username"),startTime,items.get(2),length)){
+            Toast.makeText(this, "A time conflict occurred! Operation Failed.", Toast.LENGTH_SHORT).show();
+            return -1;
+            }
+
+        else if (this.checkFullClass(items.get(1),items.get(2))){
+            Toast.makeText(this, "Class is Full! Operation Failed.", Toast.LENGTH_SHORT).show();
+            return 0;
         }
-        if( num==1) {
+        else {
             ContentValues values = new ContentValues();
             values.put("username", bundle.getString("username"));
             values.put("classType", items.get(1));
@@ -276,25 +279,17 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
             values.put("startTime", items.get(6));
 
             if (checkEnrollment(values)) {
-                if (db.insert("enrollment", null, values) != -1) num = 1;
-                else {
-                    num = -2;
-                }
+                num = db.insert("enrollment", null, values);
+
             } else {
                 Toast.makeText(this, "Already enrolled, cannot enroll again.", Toast.LENGTH_SHORT).show();
             }
         }
-        if (num == 1) {//if successfully inserted
-            Toast.makeText(this, "Inserted Successfully", Toast.LENGTH_SHORT).show();
-        }
-        else if(num ==-1){//if there is time conflict
-            Toast.makeText(this, "A time conflict occurred! Operation Failed.", Toast.LENGTH_SHORT).show();
-        }
-        else if(num ==0){//class is full
-            Toast.makeText(this, "Class is Full! Operation Failed.", Toast.LENGTH_SHORT).show();
-        }
-        else if(num ==-2){//database error
+                if(num ==-1){//database error
             Toast.makeText(this, "An error occurred! Operation Failed.", Toast.LENGTH_SHORT).show();
+        }
+        else {//if successfully inserted
+            Toast.makeText(this, "Inserted Successfully", Toast.LENGTH_SHORT).show();
         }
 
         return num;
@@ -313,10 +308,34 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
     public boolean checkFullClass(String classType, String day){//function to check if class is full or not
         ClassDatabase classd=MainActivity.getClassDatabase();
         SQLiteDatabase db = classd.getWritableDatabase();
-        Cursor cursor = db.rawQuery("Select classCap from instructorClasses where classType = ? and classDays= ?", new String[] {classType,day});
+        String c;
+        int counter = 0;
+        int capacity = -1;
+        boolean firstPass = true;
+
+        Cursor cursor = db.rawQuery("Select classCap from enrollment where classType = ? and classDays= ?", new String[] {classType, day});
+
         if (cursor.moveToFirst()){
-            String c = cursor.getString(0);
-            if (c.equals("0")) return true;//true if class is full
+            c = cursor.getString(0);
+            capacity = Integer.parseInt(c);
+
+            if (c.equals("0")) {
+                return true;//true if class is full
+            }
+
+            while (!cursor.isAfterLast()) {
+                c = (firstPass) ? c : cursor.getString(0);
+                // FOR TESTING - TEST WHETHER c stays the same (if not rawQuery is not working correctly on line 316)
+                firstPass = false;
+
+                counter++;
+
+                cursor.moveToNext();
+            }
+
+            if (capacity == counter) {
+                return true;
+            }
         }
         return false;
     }
@@ -324,15 +343,21 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
     public boolean checkConflict(String userName, int startTime, String day, int length) {// function to check if there is any time conflicts between selected class and other enrolled classes
         ClassDatabase classd=MainActivity.getClassDatabase();
         SQLiteDatabase db = classd.getWritableDatabase();
+        String start;
+        String length2;
+        Integer[] startTimeADuration;
+        int cStartTime;
+        int cLength;
+
         Cursor cursor = db.rawQuery("select * from enrollment WHERE username = ? AND classDays = ?", new String[]{userName, day});
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                String start = cursor.getString(8);
-                String length2 = cursor.getString(5);
-                Integer[] startTimeADuration = MainActivity.timeConversion(start, length2);
-                int cStartTime = startTimeADuration[0];
-                int cLength = startTimeADuration[1];
+                start = cursor.getString(8);
+                length2 = cursor.getString(5);
+                startTimeADuration = MainActivity.timeConversion(start, length2);
+                cStartTime = startTimeADuration[0];
+                cLength = startTimeADuration[1];
                 if ((startTime <= cStartTime) && ((startTime + length) > (cStartTime))) {
                     return true;
                 } else if ((cStartTime <= startTime) && ((cStartTime + cLength) > (startTime))) {

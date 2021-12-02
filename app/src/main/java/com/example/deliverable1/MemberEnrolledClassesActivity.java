@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -131,6 +132,47 @@ public class MemberEnrolledClassesActivity extends AppCompatActivity implements 
         return items;
     }
 
-    //public void unenroll() Unenroll to be implemented here! - Nelson
+    public int unenroll() { // this will need to take place on the "view all enrolled classes" page
+        classDatabase = MainActivity.getClassDatabase();
+        SQLiteDatabase db = classDatabase.getWritableDatabase();
+        int numRemoved = -1;
+
+        ArrayList<String> items = bundle.getStringArrayList("items");
+
+        /* TESTING
+        System.out.println("TESTING BEGIN");
+        System.out.println(arrayHashes.get(index).get("classType").toString());
+        System.out.println(arrayHashes.get(index).get("instructorName").toString());
+        System.out.println(arrayHashes.get(index).get("classDays").toString());
+        System.out.println(user);
+        System.out.println("TESTING END");*/
+
+        // assuming there will be a listview with a corresponding "arrayHashes" similar to how it is in instructors
+        // will need to get USERNAME to the page where this is called -- should be easy as we will be looking at a specific
+        // usernames enrolled classes
+
+        String delClassType = arrayHashes.get(index).get("classType").toString(); // assign classType with relevant command
+        String delInstructorName = arrayHashes.get(index).get("instructorName").toString(); // assign instructorName with relevant command
+        String delDay = arrayHashes.get(index).get("classDays").toString(); // assign classDays with relevant command
+
+        numRemoved = db.delete("enrollment", "username = ? AND classType = ? AND instructorName = ? AND classDays = ?",
+                new String[] {user, delClassType, delInstructorName, delDay});
+
+        arrayHashes.remove(index); // change to relevant command to remove from collection item used to populate listview
+
+        adapter.notifyDataSetChanged(); // or other relevant command
+        enrolledClassesList.setAdapter(adapter);
+        Toast.makeText(MemberEnrolledClassesActivity.this, "Successfully Unenrolled from Class", Toast.LENGTH_SHORT).show();
+
+        // TESTING / CHECKING
+        if (numRemoved > 1) {
+            Toast.makeText(MemberEnrolledClassesActivity.this, "More than one class was deleted from the enrollment database!", Toast.LENGTH_SHORT).show();
+        }
+        else if (numRemoved == 0) {
+            Toast.makeText(MemberEnrolledClassesActivity.this, "There were no classes removed from the enrollment database!", Toast.LENGTH_SHORT).show();
+        }
+
+        return numRemoved;
+    }
 
 }

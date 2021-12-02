@@ -30,6 +30,13 @@ public class MemberDatabase extends SQLiteOpenHelper {
         memberAccount2.put("password", "Myth");
 
         db.insert("members", null, memberAccount2);
+
+        ContentValues memberAccount3 = new ContentValues();
+
+        memberAccount3.put("username", "Jack");
+        memberAccount3.put("password", "Jack");
+
+        db.insert("members", null, memberAccount3);
     }
 
     public void onUpgrade(SQLiteDatabase db, int i, int j) {

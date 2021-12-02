@@ -83,8 +83,8 @@ public class ManageAccount extends AppCompatActivity implements AdminEditAccount
         if (cursorM.moveToFirst()) {
             // Populates ListView List with all classes currently in Member Database
             while (!cursorM.isAfterLast()) {
-                userAccount = cursorM.getString(0);
-                userPW = cursorM.getString(1);
+                userAccount = cursorM.getString(1);
+                userPW = cursorM.getString(2);
 
                 memberList.put(userAccount, userPW);
                 resultMap = new HashMap<>();
