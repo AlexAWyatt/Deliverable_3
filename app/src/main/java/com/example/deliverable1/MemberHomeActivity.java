@@ -293,7 +293,6 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
         }
 
         return num;
-
     }
 
     private boolean checkEnrollment(ContentValues values) {
@@ -366,5 +365,11 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
             }
         }
         return false;//false otherwise
+    }
+
+    protected void setBundle(String username, ArrayList<String> items) {
+        bundle = new Bundle();
+        bundle.putString("username", username);
+        bundle.putStringArrayList("items", items);
     }
 }
