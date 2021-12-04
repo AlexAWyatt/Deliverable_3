@@ -114,6 +114,17 @@ public class ClassDatabase extends SQLiteOpenHelper {
         return null;
     }
 
+    public boolean enrollExists(ContentValues content){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM enrollment WHERE username = ? AND classType = ? AND instructorName = ? AND classDays = ?",
+                new String[] {content.get("username").toString(), content.get("classType").toString(),
+                        content.get("instructorName").toString(), content.get("classDays").toString()});
+
+        return cursor.moveToFirst();
+    }
+
     /*public static createMemberTable(String memberTable) {
         MainActivity
     }*/
