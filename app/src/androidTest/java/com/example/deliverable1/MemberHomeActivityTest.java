@@ -37,9 +37,7 @@ public class MemberHomeActivityTest {
     private MemberHomeActivity member;
     private ActivityScenario  scenario1;
 
-    @Rule
-    public ActivityScenarioRule<MemberHomeActivity> mActivityRule =
-            new ActivityScenarioRule<>(MemberHomeActivity.class);
+
 
     @Before
     public void create() {
@@ -66,7 +64,7 @@ public class MemberHomeActivityTest {
         cars.add("3");
         cars.add("10:30");
 
-        home.setBundle("Joan", cars);
+        //home.setBundle("Joan", cars);
 
 
     }
@@ -76,6 +74,14 @@ public class MemberHomeActivityTest {
         db.close();
         members.close();
     }
+
+    @Rule
+    public ActivityScenarioRule<MainActivity> mainRule =
+            new ActivityScenarioRule<>(MainActivity.class);
+
+    //@Rule
+    //public ActivityScenarioRule<MemberHomeActivity> mActivityRule =
+            //new ActivityScenarioRule<>(MemberHomeActivity.class);
 
     //@After
     //public void tearDown() throws Exception {
@@ -90,9 +96,13 @@ public class MemberHomeActivityTest {
         // tests writing to the database and conflict detection (itemExists() method)
         //ActivityScenario  scenario = mActivityRule.getScenario();
 
-        
 
-        ActivityScenario<MemberHomeActivity> activated = ActivityScenario.launch(MemberHomeActivity.class);
+
+        //ActivityScenario<MemberHomeActivity> activated = ActivityScenario.launch(MemberHomeActivity.class);
+
+        //ActivityScenario<MainActivity> activated = ActivityScenario.launch(MainActivity.class);
+        ActivityScenario  activated = mainRule.getScenario();
+        activated.findViewById(R.layout.activity_main);
 
 
         //member = new MemberHomeActivity();
@@ -100,9 +110,9 @@ public class MemberHomeActivityTest {
 
         //home = new MemberHomeActivity();
 
-        SQLiteDatabase write = db.getWritableDatabase();
+        //SQLiteDatabase write = db.getWritableDatabase();
 
-        assertEquals(-1, member.enroll());
+        //assertEquals(-1, member.enroll());
     }
 
     /*public void createInteractiveButton(String buttonId) {
