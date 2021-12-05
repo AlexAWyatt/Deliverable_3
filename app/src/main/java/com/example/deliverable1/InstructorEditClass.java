@@ -209,13 +209,14 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
         String enrolledUser;
         String startTime;
         String classHours;
+        String iD;
 
         LinkedList<String[]> users = new LinkedList<String[]>();
         String[] userInfo;
 
         classDatabase = MainActivity.getClassDatabase();
         SQLiteDatabase db = classDatabase.getWritableDatabase();
-        Cursor cursor = db.rawQuery("select * from enrollment WHERE classType = ? AND instructorName = ? AND classDays = ?", new String[] {classType, instructorName, classDays});
+        Cursor cursor = db.rawQuery("select * from enrollment WHERE classDays = ? AND classType = ?", new String[] {classDays, classType});
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
@@ -223,9 +224,12 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
                 enrolledUser = cursor.getString(1); // should grab the username
                 startTime = cursor.getString(8); // should grab the start time of the class
                 classHours = cursor.getString(5); // should grab the length of the class
+                iD = String.valueOf(cursor.getInt(0));
 
-                userInfo = new String[] {enrolledUser, startTime, classHours};
+                userInfo = new String[] {enrolledUser, startTime, classHours, classType, iD};
                 users.add(userInfo);
+
+                cursor.moveToNext();
             }
         }
 
@@ -246,6 +250,8 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
         int nChangedLength;
         String[] userInfo;
 
+        int remove = 0;
+
         classDatabase = MainActivity.getClassDatabase();
         SQLiteDatabase db = classDatabase.getWritableDatabase();
         Cursor cursor;
@@ -257,7 +263,7 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
             nChangedStartTime = changedStartTimeADuration[0];
             nChangedLength = changedStartTimeADuration[1];
 
-            cursor = db.rawQuery("select * from enrollment WHERE username = ? AND classDays = ?", new String[] {userInfo[0], classDay});
+            cursor = db.rawQuery("select * from enrollment WHERE username = ? AND classDays = ? AND classType != ?", new String[] {userInfo[0], classDay, userInfo[3]});
 
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
@@ -267,7 +273,12 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
                     nStart = startTimeADuration[0];
                     nLength = startTimeADuration[1];
 
-                    numConflicted = numConflicted + checkConflict(nChangedStartTime, nChangedLength, nStart, nLength);
+                    remove = checkConflict(nChangedStartTime, nChangedLength, nStart, nLength);
+                    numConflicted = numConflicted + remove;
+                    if (remove == 1) {
+                        db.delete("enrollment", "username = ? AND classType != ? AND instructorName = ? AND classDays = ?", new String[] {userInfo[0], userInfo[3], username, classDay});
+                    }
+                    cursor.moveToNext();
                 }
             }
         }

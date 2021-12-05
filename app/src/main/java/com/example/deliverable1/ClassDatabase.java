@@ -125,6 +125,40 @@ public class ClassDatabase extends SQLiteOpenHelper {
         return cursor.moveToFirst();
     }
 
+    public boolean checkFullClass(String classType, String day){//function to check if class is full or not
+        SQLiteDatabase db = this.getWritableDatabase();
+        String c;
+        int counter = 0;
+        int capacity = -1;
+        boolean firstPass = true;
+
+        Cursor cursor = db.rawQuery("Select classCap from enrollment where classType = ? and classDays= ?", new String[] {classType, day});
+
+        if (cursor.moveToFirst()){
+            c = cursor.getString(0);
+            capacity = Integer.parseInt(c);
+
+            if (c.equals("0")) {
+                return true;//true if class is full
+            }
+
+            while (!cursor.isAfterLast()) {
+                c = (firstPass) ? c : cursor.getString(0);
+                // FOR TESTING - TEST WHETHER c stays the same (if not rawQuery is not working correctly on line 316)
+                firstPass = false;
+
+                counter++;
+
+                cursor.moveToNext();
+            }
+
+            if (capacity == counter) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*public static createMemberTable(String memberTable) {
         MainActivity
     }*/

@@ -258,34 +258,34 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
         int startTime = changedStartTimeADuration[0];
         int length = changedStartTimeADuration[1];
 
-        if (this.checkConflict(bundle.getString("username"),startTime,items.get(2),length)){
+        ContentValues values = new ContentValues();
+        values.put("username", bundle.getString("username"));
+        values.put("classType", items.get(1));
+        values.put("instructorName", items.get(0));
+        values.put("classDays", items.get(2));
+        values.put("classHours", items.get(3));
+        values.put("classDiff", items.get(4));
+        values.put("classCap", items.get(5));
+        values.put("startTime", items.get(6));
+
+        if (checkEnrollment(values)) {
+            Toast.makeText(this, "Already enrolled, cannot enroll again.", Toast.LENGTH_SHORT).show();
+            return -1;
+        }
+        else if (this.checkConflict(bundle.getString("username"),startTime,items.get(2),length)){
             Toast.makeText(this, "A time conflict occurred! Operation Failed.", Toast.LENGTH_SHORT).show();
             return -1;
             }
 
-        else if (this.checkFullClass(items.get(1),items.get(2))){
+        else if (classDatabase.checkFullClass(items.get(1),items.get(2))){
             Toast.makeText(this, "Class is Full! Operation Failed.", Toast.LENGTH_SHORT).show();
             return 0;
         }
         else {
-            ContentValues values = new ContentValues();
-            values.put("username", bundle.getString("username"));
-            values.put("classType", items.get(1));
-            values.put("instructorName", items.get(0));
-            values.put("classDays", items.get(2));
-            values.put("classHours", items.get(3));
-            values.put("classDiff", items.get(4));
-            values.put("classCap", items.get(5));
-            values.put("startTime", items.get(6));
-
-            if (checkEnrollment(values)) {
-                num = db.insert("enrollment", null, values);
-
-            } else {
-                Toast.makeText(this, "Already enrolled, cannot enroll again.", Toast.LENGTH_SHORT).show();
-            }
+            num = db.insert("enrollment", null, values);
         }
-                if(num ==-1){//database error
+
+        if(num ==-1){//database error
             Toast.makeText(this, "An error occurred! Operation Failed.", Toast.LENGTH_SHORT).show();
         }
         else {//if successfully inserted
@@ -301,42 +301,9 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
         Cursor cursor1 = db.rawQuery("select * from enrollment WHERE username = ? AND classType = ? AND instructorName = ? AND classDays = ?",
                 new String[] {values.get("username").toString(), values.get("classType").toString(), values.get("instructorName").toString(), values.get("classDays").toString()});
 
-        return !(cursor1.moveToFirst());
-    }
-
-    public boolean checkFullClass(String classType, String day){//function to check if class is full or not
-        ClassDatabase classd=MainActivity.getClassDatabase();
-        SQLiteDatabase db = classd.getWritableDatabase();
-        String c;
-        int counter = 0;
-        int capacity = -1;
-        boolean firstPass = true;
-
-        Cursor cursor = db.rawQuery("Select classCap from enrollment where classType = ? and classDays= ?", new String[] {classType, day});
-
-        if (cursor.moveToFirst()){
-            c = cursor.getString(0);
-            capacity = Integer.parseInt(c);
-
-            if (c.equals("0")) {
-                return true;//true if class is full
-            }
-
-            while (!cursor.isAfterLast()) {
-                c = (firstPass) ? c : cursor.getString(0);
-                // FOR TESTING - TEST WHETHER c stays the same (if not rawQuery is not working correctly on line 316)
-                firstPass = false;
-
-                counter++;
-
-                cursor.moveToNext();
-            }
-
-            if (capacity == counter) {
-                return true;
-            }
-        }
-        return false;
+        boolean check = (cursor1.moveToFirst());
+        //String holder = cursor1.getString(2);
+        return check;
     }
 
     public boolean checkConflict(String userName, int startTime, String day, int length) {// function to check if there is any time conflicts between selected class and other enrolled classes
@@ -347,6 +314,7 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
         Integer[] startTimeADuration;
         int cStartTime;
         int cLength;
+        boolean conflict = false;
 
         Cursor cursor = db.rawQuery("select * from enrollment WHERE username = ? AND classDays = ?", new String[]{userName, day});
 
@@ -357,14 +325,28 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
                 startTimeADuration = MainActivity.timeConversion(start, length2);
                 cStartTime = startTimeADuration[0];
                 cLength = startTimeADuration[1];
-                if ((startTime <= cStartTime) && ((startTime + length) > (cStartTime))) {
+
+                conflict = checkTimes(startTime, length, cStartTime, cLength);
+
+                if (conflict) {
                     return true;
-                } else if ((cStartTime <= startTime) && ((cStartTime + cLength) > (startTime))) {
-                    return true;//true if there is conflict in classes times
                 }
+                cursor.moveToNext();
             }
         }
         return false;//false otherwise
+    }
+
+    protected static boolean checkTimes(int startTime, int length, int cStartTime, int cLength) {
+        if ((startTime <= cStartTime) && ((startTime + length) > (cStartTime))) {
+            return true;
+        }
+        else if ((cStartTime <= startTime) && ((cStartTime + cLength) > (startTime))) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     protected void setBundle(String username, ArrayList<String> items) {

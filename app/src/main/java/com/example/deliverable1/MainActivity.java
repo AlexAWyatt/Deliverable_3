@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         char[] charHold = time.toCharArray();
         String timeHold = Character.toString(charHold[0]) + Character.toString(charHold[1]) + Character.toString(charHold[3]) + Character.toString(charHold[4]);
         int nStart = Integer.parseInt(timeHold);
+        if (charHold[3] == '3') {
+            nStart = nStart + 20;
+        }
 
         charHold = duration.toCharArray();
         String durHold = Character.toString(charHold[0]);
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if(charHold[2] != 'h') {
-            nLength = nLength + 30;
+            nLength = nLength + 50;
             // 30 is used in lieu of 50 as only increments of 30 minutes are used, and proper conversions are present to round 60s to whole 100s
         }
 
