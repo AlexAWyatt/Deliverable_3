@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(charHold[2] != 'h') {
             nLength = nLength + 50;
-            // 30 is used in lieu of 50 as only increments of 30 minutes are used, and proper conversions are present to round 60s to whole 100s
         }
 
         return new Integer[] {nStart, nLength};

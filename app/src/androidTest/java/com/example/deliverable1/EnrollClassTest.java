@@ -36,7 +36,6 @@ public class EnrollClassTest {
     @Test
     public void enrollClassTest(){
         //Test writing to enrollment table in classDatabase and conflict detection (checkEnrollment() function).
-        //context = ApplicationProvider.getApplicationContext();
         SQLiteDatabase sq = db.getWritableDatabase();
 
         ContentValues content = new ContentValues();
@@ -58,7 +57,6 @@ public class EnrollClassTest {
 
         sq.delete("enrollment", "username = ? AND classType = ? AND instructorName = ? AND classDays = ?"
                 , new String[] {"Nelson", "Marathon Training", "Stephen", "Wednesday"});
-        // TESTING, MAKE SURE THIS DELETE WORKS
     }
 
 }

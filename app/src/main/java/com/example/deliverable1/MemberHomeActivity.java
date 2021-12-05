@@ -302,7 +302,6 @@ public class MemberHomeActivity extends AppCompatActivity implements ViewMemberC
                 new String[] {values.get("username").toString(), values.get("classType").toString(), values.get("instructorName").toString(), values.get("classDays").toString()});
 
         boolean check = (cursor1.moveToFirst());
-        //String holder = cursor1.getString(2);
         return check;
     }
 

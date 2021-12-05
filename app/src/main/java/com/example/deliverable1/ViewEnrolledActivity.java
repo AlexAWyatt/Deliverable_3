@@ -25,11 +25,6 @@ public class ViewEnrolledActivity extends AppCompatActivity {
 
     ClassDatabase classDatabase;
 
-    //String instructor;
-    //String type;
-    //String day;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

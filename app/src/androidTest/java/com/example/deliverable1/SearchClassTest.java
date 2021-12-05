@@ -93,6 +93,9 @@ public class SearchClassTest {
         assertEquals("25",items.get(5));
         assertEquals("07:00",items.get(6));
 
+        int num1 = db.delete("classes", "className = ? AND classDesc = ?", new String[] {"Math", "Mathematics"});
+        int num2 = db.delete("instructorClasses", "instructorName = ? AND classType = ? AND classDays = ?", new String[] {username, classType, day});
+        System.out.println(num2);
     }
 
     public static void main(String[] args) {

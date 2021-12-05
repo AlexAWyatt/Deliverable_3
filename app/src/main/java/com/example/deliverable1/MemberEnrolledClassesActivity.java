@@ -132,24 +132,12 @@ public class MemberEnrolledClassesActivity extends AppCompatActivity implements 
         return items;
     }
 
-    public int unenroll() { // this will need to take place on the "view all enrolled classes" page
+    public int unenroll() {
         classDatabase = MainActivity.getClassDatabase();
         SQLiteDatabase db = classDatabase.getWritableDatabase();
         int numRemoved = -1;
 
         ArrayList<String> items = bundle.getStringArrayList("items");
-
-        /* TESTING
-        System.out.println("TESTING BEGIN");
-        System.out.println(arrayHashes.get(index).get("classType").toString());
-        System.out.println(arrayHashes.get(index).get("instructorName").toString());
-        System.out.println(arrayHashes.get(index).get("classDays").toString());
-        System.out.println(user);
-        System.out.println("TESTING END");*/
-
-        // assuming there will be a listview with a corresponding "arrayHashes" similar to how it is in instructors
-        // will need to get USERNAME to the page where this is called -- should be easy as we will be looking at a specific
-        // usernames enrolled classes
 
         String delClassType = arrayHashes.get(index).get("classType").toString(); // assign classType with relevant command
         String delInstructorName = arrayHashes.get(index).get("instructorName").toString(); // assign instructorName with relevant command
@@ -164,7 +152,7 @@ public class MemberEnrolledClassesActivity extends AppCompatActivity implements 
         enrolledClassesList.setAdapter(adapter);
         Toast.makeText(MemberEnrolledClassesActivity.this, "Successfully Unenrolled from Class", Toast.LENGTH_SHORT).show();
 
-        // TESTING / CHECKING
+        // CHECKING
         if (numRemoved > 1) {
             Toast.makeText(MemberEnrolledClassesActivity.this, "More than one class was deleted from the enrollment database!", Toast.LENGTH_SHORT).show();
         }

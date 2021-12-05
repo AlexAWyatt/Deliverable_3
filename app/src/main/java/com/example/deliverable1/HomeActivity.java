@@ -190,7 +190,6 @@ public class HomeActivity extends AppCompatActivity implements InstructorCreateC
                 cName = cursor.getString(2);
                 day = cursor.getString(3);
 
-                //list.put(cName, cDesc);
                 HashMap<String,String> resultMap = new HashMap<>();
                 resultMap.put("classType", cName);
                 resultMap.put("instructorName", IName);

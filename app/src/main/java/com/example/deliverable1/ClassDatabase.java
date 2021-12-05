@@ -158,9 +158,4 @@ public class ClassDatabase extends SQLiteOpenHelper {
         }
         return false;
     }
-
-    /*public static createMemberTable(String memberTable) {
-        MainActivity
-    }*/
-
 }

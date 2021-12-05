@@ -116,9 +116,6 @@ public class EditInstructorClassDialog extends AppCompatDialogFragment {
                         String instructorConflict = classDatabase.itemExists(className, dayOfWeek);
                         int num = 0;
 
-                        /* TESTING -- make sure this doesn't cause some edits to be impossible.
-                        This is used to determine whether checkEnrollmentConflicts() is run
-                         */
                         if ((!dayOfWeek.equals(sDay)) || (!startTime.equals(sTime)) || (!duration.equals(sDuration))) {
                             possibleConflict = true;
                         }

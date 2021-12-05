@@ -184,7 +184,6 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
         Intent intent4 = new Intent(InstructorEditClass.this, ViewEnrolledActivity.class);
         intent4.putStringArrayListExtra("enrollInfo", list);
         InstructorEditClass.this.startActivity(intent4);
-        // NEW STUFF TO CHECK FOR BONES - TESTING
     }
 
     public void deleteClass() {
@@ -286,10 +285,7 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
         return numConflicted;
     }
 
-    /* MAKE SURE TO TEST THIS METHOD - TESTING -- check cases of where times are equal. Start times of classes should be allowed to be the same
-    as end times of other classes, as long as there is no additional overlap. Assumption is made that a member can attend two classes back to back (ASSUMPTION)
-     */
-    private static int checkConflict(int nChangedStartTime, int nChangedLength, int nStart, int nLength){
+    protected static int checkConflict(int nChangedStartTime, int nChangedLength, int nStart, int nLength){
 
         if ((nChangedStartTime <= nStart) && ((nChangedStartTime + nChangedLength) > (nStart))) {
             return 1;

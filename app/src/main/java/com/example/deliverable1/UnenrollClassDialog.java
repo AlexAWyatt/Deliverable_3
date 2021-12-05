@@ -86,7 +86,7 @@ public class UnenrollClassDialog extends AppCompatDialogFragment {
     }
 
     public interface UnenrollClassDialogListener {
-        int unenroll(); //Interface method for unenroll - Nelson
+        int unenroll();
     }
 
 
