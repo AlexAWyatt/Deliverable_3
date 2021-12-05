@@ -21,6 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EditInstructorClassDialog extends AppCompatDialogFragment {
@@ -91,10 +93,16 @@ public class EditInstructorClassDialog extends AppCompatDialogFragment {
         // set to class' current capacity
 
         builder.setView(view).setTitle("Edit Class")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("View Enrolled", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
+                        ArrayList<String> enrollInfo = new ArrayList<>();
+                        enrollInfo.add(instructorName);
+                        enrollInfo.add(className);
+                        enrollInfo.add(sDay);
+
+                        listener.viewEnrolled(enrollInfo);
                     }
                 })
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -288,5 +296,6 @@ public class EditInstructorClassDialog extends AppCompatDialogFragment {
     public interface EditInstructorDialogListener{
         void editData(String day, String hours, String difficulty, String cap, String start, String orgDay, boolean possibleConflict);
         void deleteClass();
+        void viewEnrolled(ArrayList<String> list);
     }
 }

@@ -161,7 +161,7 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:background="@color/light_orange"
-            android:text="Edit/Delete Classes" />
+            android:text="Manage My Classes" />
 
         <Button
             android:id="@+id/button_viewAll"

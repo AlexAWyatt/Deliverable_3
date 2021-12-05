@@ -33,6 +33,8 @@
         <activity
             android:name=".AdminActivity"
             android:exported="true" />
+        <activity android:name=".ViewEnrolledActivity"
+            android:exported="true" />
         <activity
             android:name=".ManageAccount"
             android:exported="true" />

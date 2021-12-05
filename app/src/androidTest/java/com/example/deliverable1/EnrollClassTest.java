@@ -56,6 +56,9 @@ public class EnrollClassTest {
 
         assertTrue(enrolled);
 
+        sq.delete("enrollment", "username = ? AND classType = ? AND instructorName = ? AND classDays = ?"
+                , new String[] {"Nelson", "Marathon Training", "Stephen", "Wednesday"});
+        // TESTING, MAKE SURE THIS DELETE WORKS
     }
 
 }

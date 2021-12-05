@@ -60,21 +60,21 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
 
         Cursor cursor = database.rawQuery("select * from instructorClasses WHERE instructorName = ?", new String[] {username});
 
-        String IName;
+        String iName;
         String cName;
         String day;
 
         if (cursor.moveToFirst()) {
             // Populates listView with all classes currently in Class Database
             while (!cursor.isAfterLast()) {
-                IName = cursor.getString(1);
+                iName = cursor.getString(1);
                 cName = cursor.getString(2);
                 day = cursor.getString(3);
 
                 //list.put(cName, cDesc);
                 HashMap<String,String> resultMap = new HashMap<>();
                 resultMap.put("classType", cName);
-                resultMap.put("instructorName", IName);
+                resultMap.put("instructorName", iName);
                 resultMap.put("classDays", day);
                 arrayHashes.add(resultMap);
 
@@ -178,6 +178,13 @@ public class InstructorEditClass extends AppCompatActivity implements EditInstru
         if (possibleConflict == true) {
             checkEnrollmentConflicts(tempClassType, tempInstructorName, day); //  TESTING - to delete any newly conflicted enrollments, CHECK
         }
+    }
+
+    public void viewEnrolled(ArrayList<String> list) {
+        Intent intent4 = new Intent(InstructorEditClass.this, ViewEnrolledActivity.class);
+        intent4.putStringArrayListExtra("enrollInfo", list);
+        InstructorEditClass.this.startActivity(intent4);
+        // NEW STUFF TO CHECK FOR BONES - TESTING
     }
 
     public void deleteClass() {
