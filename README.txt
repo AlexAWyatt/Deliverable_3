@@ -78,7 +78,7 @@ capacity "Class is Full! Operation Failed.". Additionally, if the member is alre
 
 
 
-------BONUS - Instructor can vier a list of all enrolled gym members------
+------BONUS - Instructor can view a list of all enrolled gym members------
 
 This was implemented within the Instructor Role abilities. An instructor signs in, then from the landing page clicks the button "MANAGE MY CLASSES" which opens a
 new page with a listview of all the signed in instructors classes. By tapping on any class, the user is given the option to edit any of the class info, to
